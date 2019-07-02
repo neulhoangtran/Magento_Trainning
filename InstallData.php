@@ -24,16 +24,16 @@ class InstallData implements InstallDataInterface
   
         $eavSetup->addAttribute(
             \Magento\Catalog\Model\Product::ENTITY,
-            'Brand',
+            'my_custom_size',
             [
                 'type' => 'int',
                 'backend' => '',
                 'frontend' => '',
-                'label' => 'Brand',
+                'label' => 'My Custom Size',
                 'input' => 'select',
-                'note' => 'Brand Product',
+                'note' => 'My Custom Size',
                 'class' => '',
-                // 'source' => 'Aht\Helloworld\Model\Config\Source\Options',
+                // 'source' => 'Aht\ModuleTrainning\Model\Config\Source\Options',
                 'source' => '',
                 'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL,
                 'visible' => true,
@@ -51,5 +51,3 @@ class InstallData implements InstallDataInterface
                 ]
             ]    
         );  
-    }
-}
