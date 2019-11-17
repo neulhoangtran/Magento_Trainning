@@ -1,0 +1,6 @@
+﻿+ cái file di.xml thì với cái nào là :
+-   <preference for="Magento\Cms\Api\Data\PageSearchResultsInterface"
+                type="Magento\Framework\Api\SearchResults" />
+- Cái trong for là những cái sẽ đc thay thế bởi caais type, (toàn cục???). 
+- Creates an instance of typeName type and passes it in as an argument. You can pass any class name, interface name, 
+or virtual type as typeName.

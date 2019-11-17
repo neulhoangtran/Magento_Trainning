@@ -1,0 +1,10 @@
+OT : 
+4/7/2019 : project wwear 2.5h
+
+
+
+Prodject:
+PONI-12: 0.5
+MAKSD-64 :Main Menu - PONI :  0.5 
+PONI-11 : Shopping bag : 0.5
+https://convertdigital.atlassian.net/browse/MAKSD-83 : 0.5h

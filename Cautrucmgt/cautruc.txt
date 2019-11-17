@@ -1,0 +1,35 @@
+﻿+ Phần App : 
+- Phần design chứa theme thì nó có 2 file adminhtml thì nó là phần của trang http://localhost/magento2/admin_7c6idh(phần
+mà đăng nhập admin, admin123), còn phần frontend là chính là những cái giao diện ở trang http://localhost/magento2.
+- Ngoài ra khi mình viết code module thì mình sẽ lưu nó vào đây.
+
++ Phần Vendor :
+- Là cái phần viết module các kiểu tương ứng trong magento có sẵn, khi mình muốn update 1 version mới thì mình
+sẽ vào cái phần App ở trên để viết module khác thay cho module cũ.
+
++ Phần bin :
+- là cái phần hay chạy thực thi các câu lệnh như là : php bin/magento c:c.
+
++ Phần Generated là tạo ra những file mà mageto sẽ tạo sẵn cho mình khi mình chạy các dòng lệnh trong bin
+giống như php artisan như trong Laravel ấy.
+
++ Phần Block cx thuộc view nhưng nó viết tách ra thôi, nó là dữ liệu đc trả về từ MODEL, rồi từ đó kết hợp vs các view.
+
++ Các controller thì nó lấy dữ liệu từ chỗ giao diện như bình thường chỉ khác là các hàm k viết chung 1 file mà viết MỖI
+hàm 1 file.
+
++ View thì chứa 2 phần là layout và template thì phần layout chứa các file XML để điều hướng tới các module,controller,
+action tương ứng.
+
++ Routes có cái frontName = "customer" khi gõ cái này trên dường link thì nó sẽ tìm tới cái Routes nào mà có cái
+frontName nào có tên là customer.
+- Và tìm đến module có tên là module name="Magento_Customer" .
+
++ Cái Request thì tự vào xem.
+
++ Giải thích cách xử lý qua cái đường link <base_url>/<area>/<front name>/<controller name>/<action>
+- Thì nó sẽ dựa vào cái <area> và <front name> tìm ra cái Route cần xong Route đó ta tìm đc module tương ứng-> rồi từ
+module tìm ra được Controller và Action tương ứng(có <controller name>/<action> ).
+
+- Tiếp đến Từ Action thì sẽ tìm đc ra view rồi layout và template Và khối BLOCK(chứa các dữ liệu của Model trả về view).  
+ 

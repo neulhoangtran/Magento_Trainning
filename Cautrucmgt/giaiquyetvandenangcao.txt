@@ -1,0 +1,135 @@
+﻿+ di.xml
++ virtual type
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <virtualType name="moduleConfig" type="Magento\Core\Model\Config">
+        <arguments>
+            <argument name="type" xsi:type="string">system</argument>
+        </arguments>
+    </virtualType>
+    <type name="Magento\Core\Model\App">
+        <arguments>
+            <argument name="config" xsi:type="object">moduleConfig</argument>
+        </arguments>
+    </type>
+</config>
+
+- moduleConfig: A virtual type that kế thừa the type Magento\Core\Model\Config.
+- Magento\Core\Model\App: All instances of this type nhận thêm an instance of moduleConfig như là dependency (n + 1).
+
++ preference
+
+ <preference for="Magento\Catalog\Api\Data\ProductInterface" type="Magento\Catalog\Model\Product" />
+
+- thay thế mang tính toàn cục những cái trong for sẽ được thay thế bởi lớp trong type và phát triển bởi nó.
+
++ Lấy ví dụ về dependency injection trong 1 module magento.
+
++ Tìm 1 module và chỉ ra argument replacement.
+
+- thay thế mang tính cục bộ, tìm đến những chỗ có lớp được khai báo ở type, thay thế argument được báo trong contructor.
+Như hình 15 và 16 thì cái trong hàm contructor có Name là giống vs cái Name ở argument và type là mảng thì nó sẽ tìm tới cái
+như trang 16 và thay thế bằng chuối(tương ứng vs cái item).
+
++ Chỉ ra 1 module có sử dụng Proxy : module-catalog trong file di.xml (thường khai báo ở đây dòng 149).
+- Cái proxy này có tác dụng là :  khi mình khai báo đối tượng A mà đối tượng A kế thừa đối tượng B và B kế thừa C như bình thường
+sẽ phải gọi A,B,C nhưng khi có proxy thì nó sẽ gọi ra A trước, xong ví dụ cần dùng B thì nó ms gọi B tới. để giảm nặng cho chương trình.
+
++ Factory (trong cái genered) (bt không thể khởi tạo trực tiếp tới 1 model nên phải dùng tk factory kia để nó trả về model cần)
+ /**
+     * Create class instance with specified parameters
+     *
+     * @param array $data
+     * @return \AHT\BlogMvc\Model\Sach (1);
+     */
+    public function create(array $data = [])
+    {
+        return $this->_objectManager->create($this->_instanceName, $data);
+    }
+- ?? tại sao lại gọi tới đc các hàm. ???
+
+The Magento\Framework\ObjectManager is the class responsible for instantiating objects in the Magento application. 
+Magento prohibits depending on and directly using the ObjectManager in your code.
+
+Factories are an exception to this rule because they require the ObjectManager to instantiate specific models.
+
+- Magento \ Framework \ ObjectManager là lớp chịu trách nhiệm khởi tạo các đối tượng trong ứng dụng Magento. 
+Magento cấm tùy thuộc và trực tiếp sử dụng ObjectManager trong code của bạn.
+Factory là một ngoại lệ đối với quy tắc này bởi vì chúng yêu cầu ObjectManager khởi tạo các model cụ thể (1).
+rồi sau đó sử dụng các hàm thêm sửa xóa như bt tương ứng vs model đó. 
+
++ Event AND Observer
++ Event : 
+- Sự kiện sẽ được gửi đi khi 1 module or 1 action được kích hoạt, Magento cx cho phép mình tạo ra các sự kiện của riêng mình,
+nó có thể truyền dữ liệu tới bất kỳ Observer xem cái sự kiện đó.
+- To dispatch an event, call the dispatch function of the event manager class and provide, và truyền 1 mảng dữ liệu.
+- như là : 
+namespace MyCompany\MyModule;
+
+use Magento\Framework\Event\ObserverInterface;
+
+class MyClass
+{
+  /**
+   * @var EventManager
+   */
+  private $eventManager;
+
+  public function __construct(\Magento\Framework\Event\Manager $eventManager)
+  {
+    $this->eventManager = $eventManager;
+  }
+
+  public function something()
+  {
+    $eventData = null;
+    // Code...
+    $this->eventManager->dispatch('my_module_event_before');
+    // More code that sets $eventData...
+    $this->eventManager->dispatch('my_module_event_after', ['myEventData' => $eventData]);
+  }
+} 
+- CHUYỂN TỪ Event sang Observer. 
++ Observer : 
+
+namespace MyCompany\MyModule\Observer;
+
+use Magento\Framework\Event\ObserverInterface;
+
+class AnotherObserver implements ObserverInterface
+{
+  public function __construct()
+  {
+    // Observer initialization code...
+    // You can use dependency injection to get any class this observer may need.
+  }
+
+  public function execute(\Magento\Framework\Event\Observer $observer)
+  {
+    $myEventData = $observer->getData('myEventData');
+    // Additional observer execution code...
+  }
+}
+
+- Observer names must be unique per event definition. This means that you cannot have two observers with the same name 
+in the same event definition.
+
++ Plugins
+Khai báo plugin 
+- The di.xml file in your module declares a plugin for a class object:
+
+<config>
+    <type name="{ObservedType}">
+      <plugin name="{pluginName}" type="{PluginClassName}" sortOrder="1" disabled="false" />
+    </type>
+</config>
+như trong ảnh trang 26.
+
+module-catalog,
+
+di.xml dòng 235
+- Magento\Catalog\Model\Indexer\Product\Price\Plugin\Website (1)
+- \Magento\Catalog\Model\Indexer\Category\Product\Plugin\Website" (2)
+
+như trong hình thì nó sẽ chạy tk 1 xong bắt đầu chạy thằng 2
+Thì tk (1) có afterDelete xong tk 2 có afterDelete thì sau khi xong tk 1 thì nó sẽ sang tk 2,
+sau đó 
